@@ -1,14 +1,11 @@
 
 
-function gameBoard() {
+const Board = (() => {
   const rows = 3;
   const columns = 3;
   const board = [];
 
   // Create a 2d array that will represent the state of the game board
-  // For this 2d array, row 0 will represent the top row and
-  // column 0 will represent the left-most column.
-  // This nested-loop technique is a simple and common way to create a 2d array.
   for (let i = 0; i < rows; i++) {
     board[i] = [];
     for (let j = 0; j < columns; j++) {
@@ -20,6 +17,10 @@ function gameBoard() {
   // UI will eventually need to render it.
   const getBoard = () => board;
 
+  const placeToken = (spot, player) => {
+    
+  }
+
   // This method will be used to print our board to the console.
   // It is helpful to see what the board looks like after each turn as we play,
   // but we won't need it after we build our UI
@@ -29,9 +30,16 @@ function gameBoard() {
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { getBoard, printBoard };
-}
+  return { printBoard, getBoard };
+})();
 
-const board = gameBoard();
 
-board.printBoard();
+const Player = (name, token) => {
+
+  const getName = () => name;
+  const getToken = () => token;
+
+  return { getName, getToken }
+};
+
+console.log(Board.getBoard())
