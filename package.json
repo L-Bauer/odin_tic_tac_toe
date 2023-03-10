@@ -1,0 +1,17 @@
+{
+  "name": "odin_tic_tac_toe",
+  "version": "1.0.0",
+  "description": "Build  Tic Tac Toe game",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
