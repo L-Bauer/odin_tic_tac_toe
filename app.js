@@ -26,20 +26,6 @@ const gameBoard = (() => {
 })();
 
 
-const Player = (name, token) => {
-
-  const getName = () => name;
-  const getToken = () => token;
-
-  // Switch the players status
-  let status = 0;
-  if (token == 'X') {
-    status = 1;
-  }
-
-  return { getName, getToken, status }
-};
-
 const activePlayer = (name, token) => {
   const {getName, getToken} = Player(name, token);
   return {getName, getToken}
