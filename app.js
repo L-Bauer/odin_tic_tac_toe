@@ -25,6 +25,20 @@ const gameBoard = (() => {
   return { printBoard, getBoard, placeToken };
 })();
 
+const Player = (name, token) => {
+  const getName = () => name;
+  const getToken = () => token;
+
+  let status;
+  if (token == "X") {
+    status = 1;
+  } else {
+    status = 0;
+  }
+
+  return { getName, getToken, status }
+}
+
 
 const activePlayer = (name, token) => {
   const {getName, getToken} = Player(name, token);
@@ -34,8 +48,8 @@ const activePlayer = (name, token) => {
 const gameLogic = (() => {
 
 
-  const player1 = Player("Tim", "O");
-  const player2 = Player("Bob", "X");
+  const player1 = Player("Tim", "X");
+  const player2 = Player("Bob", "0");
   let currentPlayer = activePlayer(player1.getName(), player1.getToken());
 
   const switchStatus = () => {
