@@ -17,7 +17,13 @@ const gameBoard = (() => {
   };
 
   const placeToken = (placement, playerToken) => {
-    board[placement] = playerToken;
+    if (board[placement] == null) {
+      board[placement] = playerToken;
+      return true;
+    } else {
+    console.warn("This spot is not available.");
+    return false;
+    }
   }
 
   // Here, we provide an interface for the rest of our
@@ -35,8 +41,6 @@ const Player = (name, token) => {
 
 const gameLogic = (() => {
 
-  // const player1 = Player("Tim", "X");
-  // const player2 = Player("Bob", "0");
   const players = [Player("Tim", "X"), Player("Bob", "O")]
   let currentPlayer = players[0];
 
@@ -50,9 +54,11 @@ const gameLogic = (() => {
 
   const playRound = (placement) => {
     console.log(currentPlayer.getName());
-    gameBoard.placeToken(placement, currentPlayer.getToken());
-    switchStatus();
-    printNewRound();
+    if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
+      // Check game status. If there is a winner 
+      switchStatus();
+      printNewRound();
+    } else return
   };
 
   const printNewRound = () => {
