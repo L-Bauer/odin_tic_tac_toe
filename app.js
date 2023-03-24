@@ -28,6 +28,15 @@ const gameBoard = (() => {
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
     let possibleConditions = conditions.filter(condition => condition.includes(placement));
+    for (let condition of possibleConditions) {
+      let p1 = condition[0];
+      let p2 = condition[1];
+      let p3 = condition[2];
+      if (board[p1] == null) continue
+      else if (board[p1] == board[p2] && board[p2] == board[p3]) {
+        console.log("Winner");
+      }
+    }
     console.log(possibleConditions);
   };
 
