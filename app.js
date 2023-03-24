@@ -29,38 +29,22 @@ const Player = (name, token) => {
   const getName = () => name;
   const getToken = () => token;
 
-  let status;
-  if (token == "X") {
-    status = 1;
-  } else {
-    status = 0;
-  }
-
-  return { getName, getToken, status }
+  return { getName, getToken }
 }
 
-
-const activePlayer = (name, token) => {
-  const {getName, getToken} = Player(name, token);
-  return {getName, getToken}
-}
 
 const gameLogic = (() => {
 
-
-  const player1 = Player("Tim", "X");
-  const player2 = Player("Bob", "0");
-  let currentPlayer = activePlayer(player1.getName(), player1.getToken());
+  // const player1 = Player("Tim", "X");
+  // const player2 = Player("Bob", "0");
+  const players = [Player("Tim", "X"), Player("Bob", "O")]
+  let currentPlayer = players[0];
 
   const switchStatus = () => {
-    if (player1.status == 1) {
-      player1.status = 0;
-      player2.status = 1;
-      currentPlayer = activePlayer(player2.getName(), player2.getToken());
+    if (currentPlayer == players[0]) {
+      currentPlayer = players[1];
     } else {
-      player1.status = 1;
-      player2.status = 0;
-      currentPlayer = activePlayer(player1.getName(), player1.getToken());
+      currentPlayer = players[0];
     }
   };
 
