@@ -2,6 +2,19 @@
 const gameBoard = (() => {
 
   const board = Array(9);
+  const conditions = [
+    // Horizontal conditions
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    // Vertical conditions
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    // Diagonal conditions
+    [0, 4, 8],
+    [6, 4, 2]
+  ];
 
 
   // This will be the method of getting the entire board that our
@@ -16,6 +29,14 @@ const gameBoard = (() => {
     console.log(board);
   };
 
+  const checkBoard = (placement) => {
+    // Look a players placement
+    // Based on the players placement, only check the conditions that could
+    // win the game. DO not loop through every winning condition
+    let possibleConditions = conditions.filter(condition => condition.includes(placement));
+    console.log(possibleConditions);
+  };
+
   const placeToken = (placement, playerToken) => {
     if (board[placement] == null) {
       board[placement] = playerToken;
@@ -28,7 +49,7 @@ const gameBoard = (() => {
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { printBoard, getBoard, placeToken };
+  return { printBoard, getBoard, placeToken, checkBoard };
 })();
 
 const Player = (name, token) => {
@@ -55,7 +76,8 @@ const gameLogic = (() => {
   const playRound = (placement) => {
     console.log(currentPlayer.getName());
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
-      // Check game status. If there is a winner 
+      // Check game status. If there is a winner
+      gameBoard.checkBoard(placement);
       switchStatus();
       printNewRound();
     } else return
