@@ -1,0 +1,17 @@
+{
+  "name": "odin_tic_tac_toe",
+  "version": "1.0.0",
+  "description": "This project is a part of The Odin Project JavaScript course. The tic tac toe game uses factory functions and the module pattern.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.37.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
