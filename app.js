@@ -1,7 +1,7 @@
 
 const gameBoard = (() => {
 
-  const board = Array(9);
+  let board = Array(9);
 
   // Build the board on load
   const buildBoard = () => {
@@ -21,6 +21,14 @@ const gameBoard = (() => {
     }
   };
 
+  // Clear the board of any tokens
+  const clearBoard = () => {
+    let boardSpots = document.getElementsByClassName("spot");
+    for (const spot of boardSpots) {
+      spot.innerHTML = null;
+    };
+    board = Array(9);
+  }
 
   const placeToken = (placement, playerToken) => {
     let spot = document.getElementById(placement);
@@ -36,7 +44,7 @@ const gameBoard = (() => {
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { buildBoard, placeToken, board };
+  return { buildBoard, placeToken, clearBoard, board };
 })();
 
 // Player factory
@@ -107,10 +115,15 @@ const gameLogic = (() => {
 window.onload = gameLogic.showBoard();
 
 
-const boardSpots = document.querySelectorAll(".spot")
+const boardSpots = document.querySelectorAll(".spot");
 
 boardSpots.forEach((spot) => {
   spot.addEventListener('click', () => {
     gameLogic.playRound(spot.id);
   });
 });
+
+// Clears the Board
+reset.addEventListener("click", () => {
+  gameBoard.clearBoard();
+})
