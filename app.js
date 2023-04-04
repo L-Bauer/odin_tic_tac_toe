@@ -13,7 +13,22 @@ const gameBoard = (() => {
 
   // This will be the method of getting the entire board that our
   // UI will eventually need to render it.
-  const getBoard = () => board;
+  const getBoard = () => {
+    let boardPlace = document.getElementById("board");
+    let i = 0;
+    while (i < board.length) {
+      let spot = document.createElement("div");
+      spot.id = i;
+      spot.className = "spot"
+      if (board[i] == undefined){
+        spot.innerText = null;
+      } else {
+        spot.innerText = board[i];
+      }
+      boardPlace.appendChild(spot);
+      i++;
+    }
+  };
 
 
   // This method will be used to print our board to the console.
@@ -88,7 +103,20 @@ const gameLogic = (() => {
 
   const printNewRound = () => {
     gameBoard.printBoard();
+    gameBoard.getBoard();
   };
 
-  return { playRound };
+  const showBoard = () => {
+    // Brings up the board before the first round
+    gameBoard.getBoard();
+  }
+
+  return { playRound, showBoard };
 })();
+
+gameLogic.showBoard();
+
+const boardSpots = document.querySelectorAll(".spot")
+
+boardSpots.forEach(gameLogic.playRound())
+
