@@ -11,14 +11,13 @@ const gameBoard = (() => {
     [0, 4, 8], [6, 4, 2]];
 
 
-  // This will be the method of getting the entire board that our
-  // UI will eventually need to render it.
-  const getBoard = () => {
+  // Build the board on load
+  const buildBoard = () => {
     let boardPlace = document.getElementById("board");
     let i = 0;
     while (i < board.length) {
       let spot = document.createElement("div");
-      spot.id = i;
+      spot.id = "post "+i;
       spot.className = "spot"
       if (board[i] == undefined){
         spot.innerText = null;
@@ -30,19 +29,12 @@ const gameBoard = (() => {
     }
   };
 
-
-  // This method will be used to print our board to the console.
-  // It is helpful to see what the board looks like after each turn as we play,
-  // but we won't need it after we build our UI
-  const printBoard = () => {
-    console.log(board);
-  };
-
   const checkBoard = (placement) => {
     // Look a players placement
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
     let possibleConditions = conditions.filter(condition => condition.includes(placement));
+    console.log(possibleConditions);
     for (let condition of possibleConditions) {
       let p1 = condition[0];
       let p2 = condition[1];
@@ -52,12 +44,13 @@ const gameBoard = (() => {
         console.log("Winner");
       }
     }
-    console.log(possibleConditions);
   };
 
   const placeToken = (placement, playerToken) => {
+    let spot = document.getElementById(placement);
     if (board[placement] == null) {
       board[placement] = playerToken;
+      spot.innerText = playerToken;
       return true;
     } else {
     console.warn("This spot is not available.");
@@ -67,7 +60,7 @@ const gameBoard = (() => {
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { printBoard, getBoard, placeToken, checkBoard };
+  return { buildBoard, placeToken, checkBoard };
 })();
 
 const Player = (name, token) => {
@@ -80,7 +73,7 @@ const Player = (name, token) => {
 
 const gameLogic = (() => {
 
-  const players = [Player("Tim", "X"), Player("Bob", "O")]
+  const players = [Player("Player 1", "X"), Player("Player 2", "O")]
   let currentPlayer = players[0];
 
   const switchStatus = () => {
@@ -92,31 +85,29 @@ const gameLogic = (() => {
   };
 
   const playRound = (placement) => {
-    console.log(currentPlayer.getName());
+    // console.log(currentPlayer.getName());
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
       // Check game status. If there is a winner
       gameBoard.checkBoard(placement);
       switchStatus();
-      printNewRound();
     } else return
-  };
-
-  const printNewRound = () => {
-    gameBoard.printBoard();
-    gameBoard.getBoard();
   };
 
   const showBoard = () => {
     // Brings up the board before the first round
-    gameBoard.getBoard();
+    gameBoard.buildBoard();
   }
 
   return { playRound, showBoard };
 })();
 
-gameLogic.showBoard();
+window.onload = gameLogic.showBoard();
+
 
 const boardSpots = document.querySelectorAll(".spot")
 
-boardSpots.forEach(gameLogic.playRound())
-
+boardSpots.forEach((spot) => {
+  spot.addEventListener('click', () => {
+    gameLogic.playRound(spot.id);
+  });
+});
