@@ -1,2 +1,8 @@
-# odin_tic_tac_toe
-Build  Tic Tac Toe game
+# Odin Tic Tac Toe
+This project is a part of The Odin Project JavaScript course. The tic tac toe game uses factory functions and the module pattern.
+
+## Objectives
+
+## Future Features
+
+[] - Better logic to check winning or tie conditions 
