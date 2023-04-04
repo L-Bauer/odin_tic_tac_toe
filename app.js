@@ -2,14 +2,6 @@
 const gameBoard = (() => {
 
   const board = Array(9);
-  const conditions = [
-    // Horizontal conditions
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    // Vertical conditions
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    // Diagonal conditions
-    [0, 4, 8], [6, 4, 2]];
-
 
   // Build the board on load
   const buildBoard = () => {
@@ -17,7 +9,7 @@ const gameBoard = (() => {
     let i = 0;
     while (i < board.length) {
       let spot = document.createElement("div");
-      spot.id = "post "+i;
+      spot.id = i;
       spot.className = "spot"
       if (board[i] == undefined){
         spot.innerText = null;
@@ -29,22 +21,6 @@ const gameBoard = (() => {
     }
   };
 
-  const checkBoard = (placement) => {
-    // Look a players placement
-    // Based on the players placement, only check the conditions that could
-    // win the game. DO not loop through every winning condition
-    let possibleConditions = conditions.filter(condition => condition.includes(placement));
-    console.log(possibleConditions);
-    for (let condition of possibleConditions) {
-      let p1 = condition[0];
-      let p2 = condition[1];
-      let p3 = condition[2];
-      if (board[p1] == null) continue
-      else if (board[p1] == board[p2] && board[p2] == board[p3]) {
-        console.log("Winner");
-      }
-    }
-  };
 
   const placeToken = (placement, playerToken) => {
     let spot = document.getElementById(placement);
@@ -60,9 +36,10 @@ const gameBoard = (() => {
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { buildBoard, placeToken, checkBoard };
+  return { buildBoard, placeToken, board };
 })();
 
+// Player factory
 const Player = (name, token) => {
   const getName = () => name;
   const getToken = () => token;
@@ -76,6 +53,32 @@ const gameLogic = (() => {
   const players = [Player("Player 1", "X"), Player("Player 2", "O")]
   let currentPlayer = players[0];
 
+  const conditions = [
+    // Horizontal conditions
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    // Vertical conditions
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    // Diagonal conditions
+    [0, 4, 8], [6, 4, 2]];
+
+    const checkBoard = (placement) => {
+      // Look a players placement
+      // Based on the players placement, only check the conditions that could
+      // win the game. DO not loop through every winning condition
+  
+      let possibleConditions = conditions.filter(condition => condition.includes(Number(placement)));
+      console.log(possibleConditions);
+      for (let condition of possibleConditions) {
+        let p1 = condition[0];
+        let p2 = condition[1];
+        let p3 = condition[2];
+        if (gameBoard.board[p1] == null) continue
+        else if (gameBoard.board[p1] == gameBoard.board[p2] && gameBoard.board[p2] == gameBoard.board[p3]) {
+          console.log("Winner");
+        }
+      }
+    };  
+
   const switchStatus = () => {
     if (currentPlayer == players[0]) {
       currentPlayer = players[1];
@@ -88,7 +91,7 @@ const gameLogic = (() => {
     // console.log(currentPlayer.getName());
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
       // Check game status. If there is a winner
-      gameBoard.checkBoard(placement);
+      checkBoard(placement);
       switchStatus();
     } else return
   };
