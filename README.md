@@ -5,4 +5,4 @@ This project is a part of The Odin Project JavaScript course. The tic tac toe ga
 
 ## Future Features
 
-[ ] - Better logic to check winning or tie conditions 
+-[ ] Better logic to check winning or tie conditions 
