@@ -80,8 +80,9 @@ const gameLogic = (() => {
           return value;
         }
       });
-      if (boardCondition.includes(currentPlayer.getToken())
-      && !boardCondition.includes(otherPlayer.getToken())) {
+      if ((boardCondition.includes(currentPlayer.getToken())
+      && !boardCondition.includes(otherPlayer.getToken()))
+      || boardCondition.every((value) => value === undefined)) {
         winSpots.push(boardCondition);
       }
     });
