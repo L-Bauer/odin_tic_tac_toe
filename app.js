@@ -60,6 +60,7 @@ const Player = (name, token) => {
 const gameLogic = (() => {
   const players = [Player("Player 1", "X"), Player("Player 2", "O")];
   let currentPlayer = players[0];
+  let otherPlayer = players[1];
 
   const conditions = [
     // Horizontal conditions
@@ -77,12 +78,12 @@ const gameLogic = (() => {
           return value;
         }
       });
-      if (boardCondition.includes(players[0].getToken())
-      && !boardCondition.includes(players[1].getToken())) {
+      if (boardCondition.includes(currentPlayer.getToken())
+      && !boardCondition.includes(otherPlayer.getToken())) {
         return true;
       }
     });
-    console.log(open);
+    return open;
   };
 
   const checkBoard = (placement) => {
@@ -90,7 +91,8 @@ const gameLogic = (() => {
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
     const openConditions = checkOpenConditions();
-    const possibleConditions = conditions.filter((condition) => condition.includes(Number(placement)));
+    console.log(openConditions);
+    const possibleConditions = openConditions.filter((condition) => condition.includes(Number(placement)));
     for (const condition of possibleConditions) {
       const p1 = condition[0];
       const p2 = condition[1];
@@ -112,8 +114,10 @@ const gameLogic = (() => {
   const switchStatus = () => {
     if (currentPlayer === players[0]) {
       currentPlayer = players[1];
+      otherPlayer = players[0];
     } else {
       currentPlayer = players[0];
+      otherPlayer = players[1];
     }
   };
 
