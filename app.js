@@ -69,20 +69,33 @@ const gameLogic = (() => {
     // Diagonal conditions
     [0, 4, 8], [6, 4, 2]];
 
+  const checkOpenConditions = () => {
+    // Find winning conditions that a player can still win in
+    const open = conditions.filter((condition) => {
+      const boardCondition = gameBoard.board.filter((value, index) => {
+        if (condition.includes(index)) {
+          return value;
+        }
+      });
+      if (boardCondition.includes(players[0].getToken())
+      && !boardCondition.includes(players[1].getToken())) {
+        return true;
+      }
+    });
+    console.log(open);
+  };
+
   const checkBoard = (placement) => {
     // Look a players placement
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
+    const openConditions = checkOpenConditions();
     const possibleConditions = conditions.filter((condition) => condition.includes(Number(placement)));
-    console.log(possibleConditions);
     for (const condition of possibleConditions) {
       const p1 = condition[0];
       const p2 = condition[1];
       const p3 = condition[2];
       if (gameBoard.board[p1] === gameBoard.board[p2] && gameBoard.board[p2] === gameBoard.board[p3]) {
-        console.log(gameBoard.board[p1]);
-        console.log(gameBoard.board[p2]);
-        console.log(gameBoard.board[p3]);
         console.log("Winner");
       }
     }
