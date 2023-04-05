@@ -70,9 +70,11 @@ const gameLogic = (() => {
     // Diagonal conditions
     [0, 4, 8], [6, 4, 2]];
 
-  const checkOpenConditions = () => {
-    // Find winning conditions that a player can still win in
-    const open = conditions.filter((condition) => {
+  const winConditions = () => {
+    // Create an array from conditions list all the winnable conditions left
+    // on the board
+    const winSpots = [];
+    conditions.filter((condition) => {
       const boardCondition = gameBoard.board.filter((value, index) => {
         if (condition.includes(index)) {
           return value;
@@ -80,35 +82,26 @@ const gameLogic = (() => {
       });
       if (boardCondition.includes(currentPlayer.getToken())
       && !boardCondition.includes(otherPlayer.getToken())) {
-        return true;
+        winSpots.push(boardCondition);
       }
     });
-    return open;
+    return winSpots;
   };
 
-  const checkBoard = (placement) => {
+  const checkBoard = () => {
     // Look a players placement
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
-    const openConditions = checkOpenConditions();
-    console.log(openConditions);
-    const possibleConditions = openConditions.filter((condition) => condition.includes(Number(placement)));
-    for (const condition of possibleConditions) {
-      const p1 = condition[0];
-      const p2 = condition[1];
-      const p3 = condition[2];
-      if (gameBoard.board[p1] === gameBoard.board[p2] && gameBoard.board[p2] === gameBoard.board[p3]) {
-        console.log("Winner");
+    const boardSpots = winConditions();
+    console.log(boardSpots);
+    if (boardSpots.length === 0) {
+      console.log("Finished Draw");
+    }
+    boardSpots.forEach((value) => {
+      if (Object.keys(value).length === 3) {
+        console.log("Super Winner");
       }
-    }
-  };
-
-  const isDraw = () => {
-    const empty = (element) => element === null;
-    const notIncludes = !gameBoard.board.includes(undefined);
-    if (notIncludes) {
-      console.log("Draw");
-    }
+    });
   };
 
   const switchStatus = () => {
@@ -124,10 +117,9 @@ const gameLogic = (() => {
   const playRound = (placement) => {
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
       // Check game status. If there is a winner
-      checkBoard(placement);
+      checkBoard();
       switchStatus();
     }
-    isDraw();
   };
 
   const showBoard = () => {
@@ -135,7 +127,7 @@ const gameLogic = (() => {
     gameBoard.buildBoard();
   };
 
-  return { playRound, showBoard, isDraw };
+  return { playRound, showBoard };
 })();
 
 window.onload = gameLogic.showBoard();
