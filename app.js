@@ -1,5 +1,6 @@
 const gameBoard = (() => {
-  let board = Array(9);
+  const board = Array(9);
+  board.fill(undefined);
 
   // Build the board on load
   const buildBoard = () => {
@@ -27,7 +28,7 @@ const gameBoard = (() => {
       const spot = element;
       spot.innerHTML = null;
     });
-    board = Array(9);
+    board.fill(undefined);
   };
 
   const placeToken = (placement, playerToken) => {
@@ -78,12 +79,20 @@ const gameLogic = (() => {
       const p1 = condition[0];
       const p2 = condition[1];
       const p3 = condition[2];
-      checkLoop: if (gameBoard.board[p1] === null) {
-        continue checkLoop;
-      }
-      else if (gameBoard.board[p1] === gameBoard.board[p2] && gameBoard.board[p2] === gameBoard.board[p3]) {
+      if (gameBoard.board[p1] === gameBoard.board[p2] && gameBoard.board[p2] === gameBoard.board[p3]) {
+        console.log(gameBoard.board[p1]);
+        console.log(gameBoard.board[p2]);
+        console.log(gameBoard.board[p3]);
         console.log("Winner");
       }
+    }
+  };
+
+  const isDraw = () => {
+    const empty = (element) => element === null;
+    const notIncludes = !gameBoard.board.includes(undefined);
+    if (notIncludes) {
+      console.log("Draw");
     }
   };
 
@@ -96,12 +105,12 @@ const gameLogic = (() => {
   };
 
   const playRound = (placement) => {
-    // console.log(currentPlayer.getName());
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
       // Check game status. If there is a winner
       checkBoard(placement);
       switchStatus();
     }
+    isDraw();
   };
 
   const showBoard = () => {
@@ -109,7 +118,7 @@ const gameLogic = (() => {
     gameBoard.buildBoard();
   };
 
-  return { playRound, showBoard };
+  return { playRound, showBoard, isDraw };
 })();
 
 window.onload = gameLogic.showBoard();
