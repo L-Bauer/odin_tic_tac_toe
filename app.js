@@ -95,11 +95,11 @@ const gameLogic = (() => {
     const boardSpots = winConditions();
     console.log(boardSpots);
     if (boardSpots.length === 0) {
-      console.log("Finished Draw");
+      alert("Draw");
     }
     boardSpots.forEach((value) => {
       if (Object.keys(value).length === 3) {
-        console.log("Super Winner");
+        alert(`${currentPlayer.getName()} is the winner.`);
       }
     });
   };
