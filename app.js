@@ -1,50 +1,52 @@
-
 const gameBoard = (() => {
-
-  let board = Array(9);
+  const board = Array(9);
+  board.fill(undefined);
 
   // Build the board on load
   const buildBoard = () => {
-    let boardPlace = document.getElementById("board");
+    const boardPlace = document.getElementById("board");
     let i = 0;
     while (i < board.length) {
-      let spot = document.createElement("div");
+      const spot = document.createElement("div");
       spot.id = i;
-      spot.className = "spot"
-      if (board[i] == undefined){
+      spot.className = "spot";
+      if (board[i] === undefined) {
         spot.innerText = null;
       } else {
         spot.innerText = board[i];
       }
       boardPlace.appendChild(spot);
-      i++;
+      i += 1;
     }
   };
 
   // Clear the board of any tokens
   const clearBoard = () => {
-    let boardSpots = document.getElementsByClassName("spot");
-    for (const spot of boardSpots) {
+    const boardSpots = document.getElementsByClassName("spot");
+    const boardArray = Array.from(boardSpots);
+    boardArray.forEach((element) => {
+      const spot = element;
       spot.innerHTML = null;
-    };
-    board = Array(9);
-  }
+    });
+    board.fill(undefined);
+  };
 
   const placeToken = (placement, playerToken) => {
-    let spot = document.getElementById(placement);
+    const spot = document.getElementById(placement);
     if (board[placement] == null) {
       board[placement] = playerToken;
       spot.innerText = playerToken;
       return true;
-    } else {
+    }
     console.warn("This spot is not available.");
     return false;
-    }
-  }
+  };
 
   // Here, we provide an interface for the rest of our
   // application to interact with the board
-  return { buildBoard, placeToken, clearBoard, board };
+  return {
+    buildBoard, placeToken, clearBoard, board,
+  };
 })();
 
 // Player factory
@@ -52,13 +54,11 @@ const Player = (name, token) => {
   const getName = () => name;
   const getToken = () => token;
 
-  return { getName, getToken }
-}
-
+  return { getName, getToken };
+};
 
 const gameLogic = (() => {
-
-  const players = [Player("Player 1", "X"), Player("Player 2", "O")]
+  const players = [Player("Player 1", "X"), Player("Player 2", "O")];
   let currentPlayer = players[0];
 
   const conditions = [
@@ -69,26 +69,35 @@ const gameLogic = (() => {
     // Diagonal conditions
     [0, 4, 8], [6, 4, 2]];
 
-    const checkBoard = (placement) => {
-      // Look a players placement
-      // Based on the players placement, only check the conditions that could
-      // win the game. DO not loop through every winning condition
-  
-      let possibleConditions = conditions.filter(condition => condition.includes(Number(placement)));
-      console.log(possibleConditions);
-      for (let condition of possibleConditions) {
-        let p1 = condition[0];
-        let p2 = condition[1];
-        let p3 = condition[2];
-        if (gameBoard.board[p1] == null) continue
-        else if (gameBoard.board[p1] == gameBoard.board[p2] && gameBoard.board[p2] == gameBoard.board[p3]) {
-          console.log("Winner");
-        }
+  const checkBoard = (placement) => {
+    // Look a players placement
+    // Based on the players placement, only check the conditions that could
+    // win the game. DO not loop through every winning condition
+    const possibleConditions = conditions.filter((condition) => condition.includes(Number(placement)));
+    console.log(possibleConditions);
+    for (const condition of possibleConditions) {
+      const p1 = condition[0];
+      const p2 = condition[1];
+      const p3 = condition[2];
+      if (gameBoard.board[p1] === gameBoard.board[p2] && gameBoard.board[p2] === gameBoard.board[p3]) {
+        console.log(gameBoard.board[p1]);
+        console.log(gameBoard.board[p2]);
+        console.log(gameBoard.board[p3]);
+        console.log("Winner");
       }
-    };  
+    }
+  };
+
+  const isDraw = () => {
+    const empty = (element) => element === null;
+    const notIncludes = !gameBoard.board.includes(undefined);
+    if (notIncludes) {
+      console.log("Draw");
+    }
+  };
 
   const switchStatus = () => {
-    if (currentPlayer == players[0]) {
+    if (currentPlayer === players[0]) {
       currentPlayer = players[1];
     } else {
       currentPlayer = players[0];
@@ -96,34 +105,34 @@ const gameLogic = (() => {
   };
 
   const playRound = (placement) => {
-    // console.log(currentPlayer.getName());
     if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
       // Check game status. If there is a winner
       checkBoard(placement);
       switchStatus();
-    } else return
+    }
+    isDraw();
   };
 
   const showBoard = () => {
     // Brings up the board before the first round
     gameBoard.buildBoard();
-  }
+  };
 
-  return { playRound, showBoard };
+  return { playRound, showBoard, isDraw };
 })();
 
 window.onload = gameLogic.showBoard();
 
-
 const boardSpots = document.querySelectorAll(".spot");
+const resetBtn = document.getElementById("reset");
 
 boardSpots.forEach((spot) => {
-  spot.addEventListener('click', () => {
+  spot.addEventListener("click", () => {
     gameLogic.playRound(spot.id);
   });
 });
 
 // Clears the Board
-reset.addEventListener("click", () => {
+resetBtn.addEventListener("click", () => {
   gameBoard.clearBoard();
-})
+});
