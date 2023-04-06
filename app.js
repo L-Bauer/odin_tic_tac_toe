@@ -61,6 +61,7 @@ const gameLogic = (() => {
   const players = [Player("Player 1", "X"), Player("Player 2", "O")];
   let currentPlayer = players[0];
   let otherPlayer = players[1];
+  let checkBool = 0;
 
   const conditions = [
     // Horizontal conditions
@@ -119,28 +120,29 @@ const gameLogic = (() => {
   };
 
   const playRound = (placement) => {
-    if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
-      // Check game status. If there is a winner
-      const checkBool = checkBoard();
-      console.log(checkBool);
-      if (checkBool) {
-        switchStatus();
-        gameBoard.clearBoard();
-      } else {
-        switchStatus();
+    if (checkBool === 0) {
+      if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
+        // Check game status. If there is a winner
+        checkBool = checkBoard();
+        console.log(checkBool);
+        if (checkBool) {
+          switchStatus();
+        } else {
+          switchStatus();
+        }
       }
     }
   };
 
-  const showBoard = () => {
-    // Brings up the board before the first round
-    gameBoard.buildBoard();
+  const resetGame = () => {
+    checkBool = 0;
+    gameBoard.clearBoard();
   };
 
-  return { playRound, showBoard };
+  return { playRound, resetGame };
 })();
 
-window.onload = gameLogic.showBoard();
+window.onload = gameBoard.buildBoard();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
@@ -153,5 +155,5 @@ boardSpots.forEach((spot) => {
 
 // Clears the Board
 resetBtn.addEventListener("click", () => {
-  gameBoard.clearBoard();
+  gameLogic.resetGame();
 });
