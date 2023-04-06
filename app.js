@@ -94,17 +94,18 @@ const gameLogic = (() => {
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
     const boardSpots = winConditions();
+    let boolSpots = 0;
     if (boardSpots.length === 0) {
       console.log("Draw");
-      return true;
+      boolSpots = 1;
     }
-    boardSpots.forEach((value) => {
+    boardSpots.some((value) => {
       if (Object.keys(value).length === 3) {
         console.log(`${currentPlayer.getName()} is the winner.`);
-        return true;
+        boolSpots = 2;
       }
     });
-    return false;
+    return boolSpots;
   };
 
   const switchStatus = () => {
@@ -125,9 +126,9 @@ const gameLogic = (() => {
       if (checkBool) {
         switchStatus();
         gameBoard.clearBoard();
-        return;
+      } else {
+        switchStatus();
       }
-      switchStatus();
     }
   };
 
