@@ -11,9 +11,9 @@ const gameBoard = (() => {
       spot.id = i;
       spot.className = "spot";
       if (board[i] === undefined) {
-        spot.innerText = null;
+        spot.innerHTML = null;
       } else {
-        spot.innerText = board[i];
+        spot.innerHTML = board[i];
       }
       boardPlace.appendChild(spot);
       i += 1;
@@ -35,7 +35,7 @@ const gameBoard = (() => {
     const spot = document.getElementById(placement);
     if (board[placement] == null) {
       board[placement] = playerToken;
-      spot.innerText = playerToken;
+      spot.innerHTML = playerToken;
       return true;
     }
     console.warn("This spot is not available.");
@@ -91,8 +91,8 @@ const CreatePlayer = (name, token, isAI) => {
   };
 };
 
-const playerOne = CreatePlayer("Tim", "X", false, 1);
-const playerTwo = CreatePlayer("Sue", "O", true, 2);
+const playerOne = CreatePlayer("Player X", "X", false, 1);
+const playerTwo = CreatePlayer("Player O", "O", true, 2);
 
 const gameLogic = (() => {
   let currentPlayer = playerOne;
@@ -145,6 +145,11 @@ const gameLogic = (() => {
     return boolSpots;
   };
 
+  const showCurrentPlayer = () => {
+    const showPlayer = document.getElementById("show");
+    showPlayer.innerHTML = currentPlayer.getName();
+  };
+
   const switchStatus = () => {
     if (currentPlayer === playerOne) {
       currentPlayer = playerTwo;
@@ -153,6 +158,7 @@ const gameLogic = (() => {
       currentPlayer = playerOne;
       otherPlayer = playerTwo;
     }
+    showCurrentPlayer();
   };
 
   const playRound = (placement) => {
@@ -161,12 +167,13 @@ const gameLogic = (() => {
       if (validPlace) {
         // Check game status. If there is a winner
         checkBool = checkBoard();
-        if (checkBool) {
+        if (checkBool > 0) {
           switchStatus();
         } else {
           switchStatus();
           if (currentPlayer.getIsAi()) {
-            playRound();
+            setTimeout(() => playRound(), 450);
+            checkBool = checkBoard();
           }
         }
       }

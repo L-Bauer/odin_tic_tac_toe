@@ -1,11 +1,16 @@
 
 #board {
   display: grid;
-  grid-template-columns: 50px 50px 50px;
-  grid-template-rows: 50px 50px 50px;
+  grid-template-columns: 5rem 5rem 5rem;
+  grid-template-rows: 5rem 5rem 5rem;
   
 }
 
 #board > div {
   border: 1px solid black;
+}
+
+.spot {
+  text-align: center;
+  font-size: 4rem;
 }
