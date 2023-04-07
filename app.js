@@ -61,7 +61,7 @@ const gameBoard = (() => {
 })();
 
 // Player factory
-const CreatePlayer = (name, token, isAI, currentStatus) => {
+const CreatePlayer = (name, token, isAI) => {
   const getName = () => name;
   const getToken = () => token;
   const getIsAi = () => isAI;
