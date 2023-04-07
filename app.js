@@ -42,10 +42,21 @@ const gameBoard = (() => {
     return false;
   };
 
+  const openSpots = () => {
+    // Make array of open spots
+    const openArray = [];
+    board.forEach((value, index) => {
+      if (value === undefined) {
+        openArray.push(index);
+      }
+    });
+    return openArray;
+  };
+
   // Here, we provide an interface for the rest of our
   // application to interact with the board
   return {
-    buildBoard, placeToken, clearBoard, board,
+    buildBoard, placeToken, clearBoard, board, openSpots,
   };
 })();
 
@@ -54,11 +65,6 @@ const CreatePlayer = (name, token, isAI, currentStatus) => {
   const getName = () => name;
   const getToken = () => token;
   const getIsAi = () => isAI;
-  const getStatus = () => currentStatus;
-
-  const changeStatus = (newStatus) => {
-    currentStatus = newStatus;
-  };
 
   const setToken = (place) => {
     let valid = false;
@@ -72,14 +78,16 @@ const CreatePlayer = (name, token, isAI, currentStatus) => {
     if (!isAI) {
       valid = gameBoard.placeToken(place, token);
     } else {
-      const easyCpuSpot = getRandom(0, 9);
-      valid = gameBoard.placeToken(easyCpuSpot, token);
+      const spotsOpen = gameBoard.openSpots();
+      const openSpotsLength = spotsOpen.length;
+      const easyCpuSpot = getRandom(0, openSpotsLength);
+      valid = gameBoard.placeToken(spotsOpen[easyCpuSpot], token);
     }
     return valid;
   };
 
   return {
-    getName, getToken, getIsAi, setToken, getStatus, changeStatus,
+    getName, getToken, getIsAi, setToken,
   };
 };
 
@@ -141,13 +149,9 @@ const gameLogic = (() => {
     if (currentPlayer === playerOne) {
       currentPlayer = playerTwo;
       otherPlayer = playerOne;
-      playerOne.changeStatus(2);
-      playerTwo.changeStatus(1);
     } else {
       currentPlayer = playerOne;
       otherPlayer = playerTwo;
-      playerOne.changeStatus(1);
-      playerTwo.changeStatus(2);
     }
   };
 
@@ -161,6 +165,9 @@ const gameLogic = (() => {
           switchStatus();
         } else {
           switchStatus();
+          if (currentPlayer.getIsAi()) {
+            playRound();
+          }
         }
       }
     }
@@ -169,6 +176,9 @@ const gameLogic = (() => {
   const resetGame = () => {
     checkBool = 0;
     gameBoard.clearBoard();
+    if (currentPlayer.getIsAi()) {
+      playRound();
+    }
   };
 
   return { playRound, resetGame };
