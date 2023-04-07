@@ -53,23 +53,36 @@ const gameBoard = (() => {
 const CreatePlayer = (name, token, isAI) => {
   const getName = () => name;
   const getToken = () => token;
-
-  const isHuman = () => isAI === false;
+  const getIsAi = () => isAI;
 
   const setToken = (place) => {
-    if (isHuman) {
-      gameBoard.placeToken(place, token);
+    let valid = false;
+
+    const getRandom = (min, max) => {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min) + min);
+      // The maximum is exclusive and the minimum is inclusive
+    };
+    console.log(isAI);
+    if (!isAI) {
+      valid = gameBoard.placeToken(place, token);
+    } else {
+      const easyCpuSpot = getRandom(0, 9);
+      valid = gameBoard.placeToken(easyCpuSpot, token);
     }
+    return valid;
   };
 
-  return { getName, getToken, setToken };
+  return {
+    getName, getToken, getIsAi, setToken,
+  };
 };
 
 const playerOne = CreatePlayer("Tim", "X", false);
-const playerTwo = CreatePlayer("Sue", "O", false);
+const playerTwo = CreatePlayer("Sue", "O", true);
 
 const gameLogic = (() => {
-  const players = [CreatePlayer("Player 1", "X"), CreatePlayer("Player 2", "O")];
   let currentPlayer = playerOne;
   let otherPlayer = playerTwo;
   let checkBool = 0;
@@ -81,6 +94,8 @@ const gameLogic = (() => {
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     // Diagonal conditions
     [0, 4, 8], [6, 4, 2]];
+
+  const isCurrentPlayerAI = () => currentPlayer.getIsAi;
 
   const winConditions = () => {
     // Create an array from conditions list all the winnable conditions left
@@ -132,10 +147,10 @@ const gameLogic = (() => {
 
   const playRound = (placement) => {
     if (checkBool === 0) {
-      if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
+      const validPlace = currentPlayer.setToken(placement);
+      if (validPlace) {
         // Check game status. If there is a winner
         checkBool = checkBoard();
-        console.log(checkBool);
         if (checkBool) {
           switchStatus();
         } else {
@@ -150,13 +165,15 @@ const gameLogic = (() => {
     gameBoard.clearBoard();
   };
 
-  return { playRound, resetGame };
+  return { playRound, resetGame, isCurrentPlayerAI };
 })();
 
 window.onload = gameBoard.buildBoard();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
+
+console.log(gameLogic.isCurrentPlayerAI());
 
 boardSpots.forEach((spot) => {
   spot.addEventListener("click", () => {
