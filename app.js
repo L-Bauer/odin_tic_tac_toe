@@ -42,25 +42,62 @@ const gameBoard = (() => {
     return false;
   };
 
+  const openSpots = () => {
+    // Make array of open spots
+    const openArray = [];
+    board.forEach((value, index) => {
+      if (value === undefined) {
+        openArray.push(index);
+      }
+    });
+    return openArray;
+  };
+
   // Here, we provide an interface for the rest of our
   // application to interact with the board
   return {
-    buildBoard, placeToken, clearBoard, board,
+    buildBoard, placeToken, clearBoard, board, openSpots,
   };
 })();
 
 // Player factory
-const Player = (name, token) => {
+const CreatePlayer = (name, token, isAI) => {
   const getName = () => name;
   const getToken = () => token;
+  const getIsAi = () => isAI;
 
-  return { getName, getToken };
+  const setToken = (place) => {
+    let valid = false;
+
+    const getRandom = (min, max) => {
+      const RandomMin = Math.ceil(min);
+      const RandomMax = Math.floor(max);
+      return Math.floor(Math.random() * (RandomMax - RandomMin) + RandomMin);
+      // The maximum is exclusive and the minimum is inclusive
+    };
+    if (!isAI) {
+      valid = gameBoard.placeToken(place, token);
+    } else {
+      const spotsOpen = gameBoard.openSpots();
+      const openSpotsLength = spotsOpen.length;
+      const easyCpuSpot = getRandom(0, openSpotsLength);
+      valid = gameBoard.placeToken(spotsOpen[easyCpuSpot], token);
+    }
+    return valid;
+  };
+
+  return {
+    getName, getToken, getIsAi, setToken,
+  };
 };
 
+const playerOne = CreatePlayer("Tim", "X", false, 1);
+const playerTwo = CreatePlayer("Sue", "O", true, 2);
+
 const gameLogic = (() => {
-  const players = [Player("Player 1", "X"), Player("Player 2", "O")];
-  let currentPlayer = players[0];
-  let otherPlayer = players[1];
+  let currentPlayer = playerOne;
+  let otherPlayer = playerTwo;
+  let checkBool = 0;
 
   const conditions = [
     // Horizontal conditions
@@ -94,44 +131,60 @@ const gameLogic = (() => {
     // Based on the players placement, only check the conditions that could
     // win the game. DO not loop through every winning condition
     const boardSpots = winConditions();
-    console.log(boardSpots);
+    let boolSpots = 0;
     if (boardSpots.length === 0) {
-      alert("Draw");
+      console.log("Draw");
+      boolSpots = 1;
     }
-    boardSpots.forEach((value) => {
+    boardSpots.some((value) => {
       if (Object.keys(value).length === 3) {
-        alert(`${currentPlayer.getName()} is the winner.`);
+        console.log(`${currentPlayer.getName()} is the winner.`);
+        boolSpots = 2;
       }
     });
+    return boolSpots;
   };
 
   const switchStatus = () => {
-    if (currentPlayer === players[0]) {
-      currentPlayer = players[1];
-      otherPlayer = players[0];
+    if (currentPlayer === playerOne) {
+      currentPlayer = playerTwo;
+      otherPlayer = playerOne;
     } else {
-      currentPlayer = players[0];
-      otherPlayer = players[1];
+      currentPlayer = playerOne;
+      otherPlayer = playerTwo;
     }
   };
 
   const playRound = (placement) => {
-    if (gameBoard.placeToken(placement, currentPlayer.getToken())) {
-      // Check game status. If there is a winner
-      checkBoard();
-      switchStatus();
+    if (checkBool === 0) {
+      const validPlace = currentPlayer.setToken(placement);
+      if (validPlace) {
+        // Check game status. If there is a winner
+        checkBool = checkBoard();
+        if (checkBool) {
+          switchStatus();
+        } else {
+          switchStatus();
+          if (currentPlayer.getIsAi()) {
+            playRound();
+          }
+        }
+      }
     }
   };
 
-  const showBoard = () => {
-    // Brings up the board before the first round
-    gameBoard.buildBoard();
+  const resetGame = () => {
+    checkBool = 0;
+    gameBoard.clearBoard();
+    if (currentPlayer.getIsAi()) {
+      playRound();
+    }
   };
 
-  return { playRound, showBoard };
+  return { playRound, resetGame };
 })();
 
-window.onload = gameLogic.showBoard();
+window.onload = gameBoard.buildBoard();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
@@ -144,5 +197,5 @@ boardSpots.forEach((spot) => {
 
 // Clears the Board
 resetBtn.addEventListener("click", () => {
-  gameBoard.clearBoard();
+  gameLogic.resetGame();
 });
