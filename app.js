@@ -50,21 +50,25 @@ const gameBoard = (() => {
 })();
 
 // Player factory
-const CreatePlayer = (name, token, isAI) => {
+const CreatePlayer = (name, token, isAI, currentStatus) => {
   const getName = () => name;
   const getToken = () => token;
   const getIsAi = () => isAI;
+  const getStatus = () => currentStatus;
+
+  const changeStatus = (newStatus) => {
+    currentStatus = newStatus;
+  };
 
   const setToken = (place) => {
     let valid = false;
 
     const getRandom = (min, max) => {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min) + min);
+      const RandomMin = Math.ceil(min);
+      const RandomMax = Math.floor(max);
+      return Math.floor(Math.random() * (RandomMax - RandomMin) + RandomMin);
       // The maximum is exclusive and the minimum is inclusive
     };
-    console.log(isAI);
     if (!isAI) {
       valid = gameBoard.placeToken(place, token);
     } else {
@@ -75,12 +79,12 @@ const CreatePlayer = (name, token, isAI) => {
   };
 
   return {
-    getName, getToken, getIsAi, setToken,
+    getName, getToken, getIsAi, setToken, getStatus, changeStatus,
   };
 };
 
-const playerOne = CreatePlayer("Tim", "X", false);
-const playerTwo = CreatePlayer("Sue", "O", true);
+const playerOne = CreatePlayer("Tim", "X", false, 1);
+const playerTwo = CreatePlayer("Sue", "O", true, 2);
 
 const gameLogic = (() => {
   let currentPlayer = playerOne;
@@ -94,8 +98,6 @@ const gameLogic = (() => {
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     // Diagonal conditions
     [0, 4, 8], [6, 4, 2]];
-
-  const isCurrentPlayerAI = () => currentPlayer.getIsAi;
 
   const winConditions = () => {
     // Create an array from conditions list all the winnable conditions left
@@ -139,9 +141,13 @@ const gameLogic = (() => {
     if (currentPlayer === playerOne) {
       currentPlayer = playerTwo;
       otherPlayer = playerOne;
+      playerOne.changeStatus(2);
+      playerTwo.changeStatus(1);
     } else {
       currentPlayer = playerOne;
       otherPlayer = playerTwo;
+      playerOne.changeStatus(1);
+      playerTwo.changeStatus(2);
     }
   };
 
@@ -165,15 +171,13 @@ const gameLogic = (() => {
     gameBoard.clearBoard();
   };
 
-  return { playRound, resetGame, isCurrentPlayerAI };
+  return { playRound, resetGame };
 })();
 
 window.onload = gameBoard.buildBoard();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
-
-console.log(gameLogic.isCurrentPlayerAI());
 
 boardSpots.forEach((spot) => {
   spot.addEventListener("click", () => {
