@@ -50,17 +50,28 @@ const gameBoard = (() => {
 })();
 
 // Player factory
-const Player = (name, token) => {
+const CreatePlayer = (name, token, isAI) => {
   const getName = () => name;
   const getToken = () => token;
 
-  return { getName, getToken };
+  const isHuman = () => isAI === false;
+
+  const setToken = (place) => {
+    if (isHuman) {
+      gameBoard.placeToken(place, token);
+    }
+  };
+
+  return { getName, getToken, setToken };
 };
 
+const playerOne = CreatePlayer("Tim", "X", false);
+const playerTwo = CreatePlayer("Sue", "O", false);
+
 const gameLogic = (() => {
-  const players = [Player("Player 1", "X"), Player("Player 2", "O")];
-  let currentPlayer = players[0];
-  let otherPlayer = players[1];
+  const players = [CreatePlayer("Player 1", "X"), CreatePlayer("Player 2", "O")];
+  let currentPlayer = playerOne;
+  let otherPlayer = playerTwo;
   let checkBool = 0;
 
   const conditions = [
@@ -110,12 +121,12 @@ const gameLogic = (() => {
   };
 
   const switchStatus = () => {
-    if (currentPlayer === players[0]) {
-      currentPlayer = players[1];
-      otherPlayer = players[0];
+    if (currentPlayer === playerOne) {
+      currentPlayer = playerTwo;
+      otherPlayer = playerOne;
     } else {
-      currentPlayer = players[0];
-      otherPlayer = players[1];
+      currentPlayer = playerOne;
+      otherPlayer = playerTwo;
     }
   };
 
