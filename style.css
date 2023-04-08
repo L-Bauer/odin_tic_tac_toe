@@ -1,16 +1,43 @@
+html {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  display: flex;
+  background-color: gray;
+  align-items: center;
+  flex-direction: column;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.main {
+  display: flex;
+  
+}
 
 #board {
   display: grid;
-  grid-template-columns: 5rem 5rem 5rem;
-  grid-template-rows: 5rem 5rem 5rem;
+  grid-template-columns: 7rem 7rem 7rem;
+  grid-template-rows: 7rem 7rem 7rem;
   
 }
 
 #board > div {
-  border: 1px solid black;
+  border: 2px solid black;
 }
 
 .spot {
-  text-align: center;
-  font-size: 4rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4em;
+  transition: 250ms;
+}
+
+.spot:hover {
+  background-color: darkgray;
+  opacity: .5;
 }

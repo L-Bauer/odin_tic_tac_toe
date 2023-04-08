@@ -10,14 +10,20 @@
     </head>
     <body>
       <h1 class="title">Tic Tac Toe</h1>
-
-      <div id="board"></div>
-      <button type="button" id="reset">Reset Board</button>
-      <div id="current" class="status">
-        <h3>Current Players Turn:</h3>
-        <div id="show"></div>
+      <div class="main">
+        <div class="left">
+          <h3 class="info">Current Players Turn:</h3>
+          <div id="player" class="status"></div>
+        </div>
+        <div class = "middle">
+          <div id="board"></div>
+          <button type="button" id="reset">Reset Board</button>      
+        </div>
+        <div class="right">
+          <h3 class="info">Game Information</h3>
+          <div id="gameStatus" class="status"></div>
+        </div>
       </div>
-      <div id="gameStatus" class="status"></div>
         <script src="app.js" async defer></script>
     </body>
 </html>
