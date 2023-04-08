@@ -19,6 +19,12 @@ h1 {
   border-radius: 1em;
 }
 
+.middle {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
 #board {
   display: grid;
   grid-template-columns: 7rem 7rem 7rem;
