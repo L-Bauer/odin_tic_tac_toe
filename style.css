@@ -14,14 +14,16 @@ h1 {
 
 .main {
   display: flex;
-  
+  background-color:rgba(156, 165, 125, 0.43);
+  padding: 5rem;
+  border-radius: 1em;
 }
 
 #board {
   display: grid;
   grid-template-columns: 7rem 7rem 7rem;
   grid-template-rows: 7rem 7rem 7rem;
-  
+  padding: 1em;
 }
 
 #board > div {

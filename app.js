@@ -1,4 +1,5 @@
 const statusBar = document.getElementById("gameStatus");
+statusBar.innerHTML = "Game In-Progress";
 
 const gameBoard = (() => {
   const board = Array(9);
@@ -189,6 +190,7 @@ const gameLogic = (() => {
   const resetGame = () => {
     checkBool = 0;
     gameBoard.clearBoard();
+    statusBar.innerHTML = "Game In-Progress";
     if (currentPlayer.getIsAi()) {
       playRound();
     }
