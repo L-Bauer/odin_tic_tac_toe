@@ -41,8 +41,7 @@ const gameBoard = (() => {
       spot.innerHTML = playerToken;
       return true;
     }
-    console.warn("This spot is not available.");
-    statusBar.innerHTML = "This spot is not available.";
+    statusBar.innerHTML = "Spot is not open.";
     return false;
   };
 
@@ -173,6 +172,7 @@ const gameLogic = (() => {
       const validPlace = currentPlayer.setToken(placement);
       if (validPlace) {
         // Check game status. If there is a winner
+        statusBar.innerHTML = "Game In-Progress";
         checkBool = checkBoard();
         if (checkBool > 0) {
           switchStatus();
