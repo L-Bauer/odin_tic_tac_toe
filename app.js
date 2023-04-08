@@ -1,3 +1,5 @@
+const statusBar = document.getElementById("gameStatus");
+
 const gameBoard = (() => {
   const board = Array(9);
   board.fill(undefined);
@@ -39,6 +41,7 @@ const gameBoard = (() => {
       return true;
     }
     console.warn("This spot is not available.");
+    statusBar.innerHTML = "This spot is not available.";
     return false;
   };
 
@@ -133,12 +136,15 @@ const gameLogic = (() => {
     const boardSpots = winConditions();
     let boolSpots = 0;
     if (boardSpots.length === 0) {
+      statusBar.innerHTML = "Game is a Draw.";
       console.log("Draw");
       boolSpots = 1;
     }
     boardSpots.some((value) => {
       if (Object.keys(value).length === 3) {
         console.log(`${currentPlayer.getName()} is the winner.`);
+        statusBar.innerHTML = `${currentPlayer.getName()} is the winner.`;
+
         boolSpots = 2;
       }
     });
@@ -146,7 +152,7 @@ const gameLogic = (() => {
   };
 
   const showCurrentPlayer = () => {
-    const showPlayer = document.getElementById("show");
+    const showPlayer = document.getElementById("player");
     showPlayer.innerHTML = currentPlayer.getName();
   };
 
@@ -188,10 +194,11 @@ const gameLogic = (() => {
     }
   };
 
-  return { playRound, resetGame };
+  return { playRound, resetGame, showCurrentPlayer };
 })();
 
 window.onload = gameBoard.buildBoard();
+gameLogic.showCurrentPlayer();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
