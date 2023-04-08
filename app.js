@@ -1,3 +1,6 @@
+const statusBar = document.getElementById("gameStatus");
+statusBar.innerHTML = "Game In-Progress";
+
 const gameBoard = (() => {
   const board = Array(9);
   board.fill(undefined);
@@ -11,9 +14,9 @@ const gameBoard = (() => {
       spot.id = i;
       spot.className = "spot";
       if (board[i] === undefined) {
-        spot.innerText = null;
+        spot.innerHTML = null;
       } else {
-        spot.innerText = board[i];
+        spot.innerHTML = board[i];
       }
       boardPlace.appendChild(spot);
       i += 1;
@@ -35,10 +38,11 @@ const gameBoard = (() => {
     const spot = document.getElementById(placement);
     if (board[placement] == null) {
       board[placement] = playerToken;
-      spot.innerText = playerToken;
+      spot.innerHTML = playerToken;
       return true;
     }
     console.warn("This spot is not available.");
+    statusBar.innerHTML = "This spot is not available.";
     return false;
   };
 
@@ -91,8 +95,8 @@ const CreatePlayer = (name, token, isAI) => {
   };
 };
 
-const playerOne = CreatePlayer("Tim", "X", false, 1);
-const playerTwo = CreatePlayer("Sue", "O", true, 2);
+const playerOne = CreatePlayer("Player X", "X", false, 1);
+const playerTwo = CreatePlayer("Player O", "O", true, 2);
 
 const gameLogic = (() => {
   let currentPlayer = playerOne;
@@ -133,16 +137,24 @@ const gameLogic = (() => {
     const boardSpots = winConditions();
     let boolSpots = 0;
     if (boardSpots.length === 0) {
+      statusBar.innerHTML = "Game is a Draw.";
       console.log("Draw");
       boolSpots = 1;
     }
     boardSpots.some((value) => {
       if (Object.keys(value).length === 3) {
         console.log(`${currentPlayer.getName()} is the winner.`);
+        statusBar.innerHTML = `${currentPlayer.getName()} is the winner.`;
+
         boolSpots = 2;
       }
     });
     return boolSpots;
+  };
+
+  const showCurrentPlayer = () => {
+    const showPlayer = document.getElementById("player");
+    showPlayer.innerHTML = currentPlayer.getName();
   };
 
   const switchStatus = () => {
@@ -153,6 +165,7 @@ const gameLogic = (() => {
       currentPlayer = playerOne;
       otherPlayer = playerTwo;
     }
+    showCurrentPlayer();
   };
 
   const playRound = (placement) => {
@@ -161,12 +174,13 @@ const gameLogic = (() => {
       if (validPlace) {
         // Check game status. If there is a winner
         checkBool = checkBoard();
-        if (checkBool) {
+        if (checkBool > 0) {
           switchStatus();
         } else {
           switchStatus();
           if (currentPlayer.getIsAi()) {
-            playRound();
+            setTimeout(() => playRound(), 450);
+            checkBool = checkBoard();
           }
         }
       }
@@ -176,15 +190,17 @@ const gameLogic = (() => {
   const resetGame = () => {
     checkBool = 0;
     gameBoard.clearBoard();
+    statusBar.innerHTML = "Game In-Progress";
     if (currentPlayer.getIsAi()) {
       playRound();
     }
   };
 
-  return { playRound, resetGame };
+  return { playRound, resetGame, showCurrentPlayer };
 })();
 
 window.onload = gameBoard.buildBoard();
+gameLogic.showCurrentPlayer();
 
 const boardSpots = document.querySelectorAll(".spot");
 const resetBtn = document.getElementById("reset");
